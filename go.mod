@@ -1,4 +1,4 @@
-module github.com/boggydigital/vangogh_values
+module github.com/arelate/vangogh_values
 
 go 1.16
 
