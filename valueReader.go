@@ -74,7 +74,7 @@ func (vr *ValueReader) WishlistProduct(id string) (wishlistProduct *gog_types.St
 }
 
 func (vr *ValueReader) Details(id string) (details *gog_types.Details, err error) {
-	err = vr.readValue(id, vangogh_types.WishlistProducts, &details)
+	err = vr.readValue(id, vangogh_types.Details, &details)
 	return details, err
 }
 
