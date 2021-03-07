@@ -87,3 +87,18 @@ func (vr *ValueReader) ApiProductV2(id string) (apiProductV2 *gog_types.ApiProdu
 	err = vr.readValue(id, vangogh_types.ApiProductsV2, &apiProductV2)
 	return apiProductV2, err
 }
+
+func (vr *ValueReader) StorePage(page string) (storePage *gog_types.StoreProductsPage, err error) {
+	err = vr.readValue(page, vangogh_types.StorePage, &storePage)
+	return storePage, err
+}
+
+func (vr *ValueReader) AccountStorePage(page string) (accountStorePage *gog_types.AccountProductsPage, err error) {
+	err = vr.readValue(page, vangogh_types.AccountPage, &accountStorePage)
+	return accountStorePage, err
+}
+
+func (vr *ValueReader) WishlistPage(page string) (wishlistPage *gog_types.WishlistPage, err error) {
+	err = vr.readValue(page, vangogh_types.WishlistPage, &wishlistPage)
+	return wishlistPage, err
+}
