@@ -37,7 +37,7 @@ func NewReader(pt vangogh_types.ProductType, mt gog_types.Media) (*ValueReader, 
 
 func (vr *ValueReader) readValue(id string, pt vangogh_types.ProductType, val interface{}) error {
 	if vr.productType != pt {
-		return fmt.Errorf("vangogh_types: value reader for product type %s doesn't support %s", vr.productType, pt)
+		return fmt.Errorf("vangogh_types: %s value reader doesn't support %s", vr.productType, pt)
 	}
 
 	spReadCloser, err := vr.valueSet.Get(id)
@@ -84,6 +84,6 @@ func (vr *ValueReader) ApiProductV1(id string) (apiProductV1 *gog_types.ApiProdu
 }
 
 func (vr *ValueReader) ApiProductV2(id string) (apiProductV2 *gog_types.ApiProductV2, err error) {
-	err = vr.readValue(id, vangogh_types.ApiProductsV1, &apiProductV2)
+	err = vr.readValue(id, vangogh_types.ApiProductsV2, &apiProductV2)
 	return apiProductV2, err
 }
