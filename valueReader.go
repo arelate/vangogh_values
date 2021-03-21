@@ -16,7 +16,7 @@ type ValueReader struct {
 }
 
 func NewReader(pt vangogh_types.ProductType, mt gog_types.Media) (*ValueReader, error) {
-	dst, err := vangogh_urls.DstProductTypeUrl(pt, mt)
+	dst, err := vangogh_urls.LocalProductsDir(pt, mt)
 	if err != nil {
 		return nil, err
 	}
@@ -45,6 +45,10 @@ func (vr *ValueReader) readValue(id string, pt vangogh_types.ProductType, val in
 		return err
 	}
 
+	if spReadCloser == nil {
+		return nil
+	}
+
 	defer spReadCloser.Close()
 
 	if err := json.NewDecoder(spReadCloser).Decode(val); err != nil {
@@ -56,6 +60,18 @@ func (vr *ValueReader) readValue(id string, pt vangogh_types.ProductType, val in
 
 func (vr *ValueReader) All() []string {
 	return vr.valueSet.All()
+}
+
+func (vr *ValueReader) Contains(id string) bool {
+	return vr.valueSet.Contains(id)
+}
+
+func (vr *ValueReader) CreatedAfter(timestamp int64) []string {
+	return vr.valueSet.CreatedAfter(timestamp)
+}
+
+func (vr *ValueReader) ModifiedAfter(timestamp int64) []string {
+	return vr.valueSet.ModifiedAfter(timestamp)
 }
 
 func (vr *ValueReader) StoreProduct(id string) (storeProduct *gog_types.StoreProduct, err error) {
@@ -101,4 +117,29 @@ func (vr *ValueReader) AccountStorePage(page string) (accountStorePage *gog_type
 func (vr *ValueReader) WishlistPage(page string) (wishlistPage *gog_types.WishlistPage, err error) {
 	err = vr.readValue(page, vangogh_types.WishlistPage, &wishlistPage)
 	return wishlistPage, err
+}
+
+func (vr *ValueReader) ProductType(key string, pt vangogh_types.ProductType) (interface{}, error) {
+	switch pt {
+	case vangogh_types.StoreProducts:
+		return vr.StoreProduct(key)
+	case vangogh_types.AccountProducts:
+		return vr.AccountProduct(key)
+	case vangogh_types.WishlistProducts:
+		return vr.WishlistProduct(key)
+	case vangogh_types.Details:
+		return vr.Details(key)
+	case vangogh_types.ApiProductsV1:
+		return vr.ApiProductV1(key)
+	case vangogh_types.ApiProductsV2:
+		return vr.ApiProductV2(key)
+	case vangogh_types.StorePage:
+		return vr.StorePage(key)
+	case vangogh_types.AccountPage:
+		return vr.AccountStorePage(key)
+	case vangogh_types.WishlistPage:
+		return vr.WishlistPage(key)
+	default:
+		return nil, fmt.Errorf("vangogh_values: cannot create %s value", pt)
+	}
 }
