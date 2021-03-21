@@ -3,6 +3,7 @@ package vangogh_values
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/arelate/gog_media"
 	"github.com/arelate/gog_types"
 	"github.com/arelate/vangogh_types"
 	"github.com/arelate/vangogh_urls"
@@ -11,11 +12,11 @@ import (
 
 type ValueReader struct {
 	productType vangogh_types.ProductType
-	mediaType   gog_types.Media
+	mediaType   gog_media.Media
 	valueSet    *kvas.ValueSet
 }
 
-func NewReader(pt vangogh_types.ProductType, mt gog_types.Media) (*ValueReader, error) {
+func NewReader(pt vangogh_types.ProductType, mt gog_media.Media) (*ValueReader, error) {
 	dst, err := vangogh_urls.LocalProductsDir(pt, mt)
 	if err != nil {
 		return nil, err
