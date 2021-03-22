@@ -36,11 +36,7 @@ func NewReader(pt vangogh_products.ProductType, mt gog_media.Media) (*ValueReade
 	return vr, nil
 }
 
-func (vr *ValueReader) readValue(id string, pt vangogh_products.ProductType, val interface{}) error {
-	if vr.productType != pt {
-		return fmt.Errorf("vangogh_types: %s value reader doesn't support %s", vr.productType, pt)
-	}
-
+func (vr *ValueReader) readValue(id string, val interface{}) error {
 	spReadCloser, err := vr.valueSet.Get(id)
 	if err != nil {
 		return err
@@ -76,52 +72,52 @@ func (vr *ValueReader) ModifiedAfter(timestamp int64) []string {
 }
 
 func (vr *ValueReader) StoreProduct(id string) (storeProduct *gog_types.StoreProduct, err error) {
-	err = vr.readValue(id, vangogh_products.StoreProducts, &storeProduct)
+	err = vr.readValue(id, &storeProduct)
 	return storeProduct, err
 }
 
 func (vr *ValueReader) AccountProduct(id string) (accountProduct *gog_types.AccountProduct, err error) {
-	err = vr.readValue(id, vangogh_products.AccountProducts, &accountProduct)
+	err = vr.readValue(id, &accountProduct)
 	return accountProduct, err
 }
 
 func (vr *ValueReader) WishlistProduct(id string) (wishlistProduct *gog_types.StoreProduct, err error) {
-	err = vr.readValue(id, vangogh_products.WishlistProducts, &wishlistProduct)
+	err = vr.readValue(id, &wishlistProduct)
 	return wishlistProduct, err
 }
 
 func (vr *ValueReader) Details(id string) (details *gog_types.Details, err error) {
-	err = vr.readValue(id, vangogh_products.Details, &details)
+	err = vr.readValue(id, &details)
 	return details, err
 }
 
 func (vr *ValueReader) ApiProductV1(id string) (apiProductV1 *gog_types.ApiProductV1, err error) {
-	err = vr.readValue(id, vangogh_products.ApiProductsV1, &apiProductV1)
+	err = vr.readValue(id, &apiProductV1)
 	return apiProductV1, err
 }
 
 func (vr *ValueReader) ApiProductV2(id string) (apiProductV2 *gog_types.ApiProductV2, err error) {
-	err = vr.readValue(id, vangogh_products.ApiProductsV2, &apiProductV2)
+	err = vr.readValue(id, &apiProductV2)
 	return apiProductV2, err
 }
 
 func (vr *ValueReader) StorePage(page string) (storePage *gog_types.StoreProductsPage, err error) {
-	err = vr.readValue(page, vangogh_products.StorePage, &storePage)
+	err = vr.readValue(page, &storePage)
 	return storePage, err
 }
 
 func (vr *ValueReader) AccountStorePage(page string) (accountStorePage *gog_types.AccountProductsPage, err error) {
-	err = vr.readValue(page, vangogh_products.AccountPage, &accountStorePage)
+	err = vr.readValue(page, &accountStorePage)
 	return accountStorePage, err
 }
 
 func (vr *ValueReader) WishlistPage(page string) (wishlistPage *gog_types.WishlistPage, err error) {
-	err = vr.readValue(page, vangogh_products.WishlistPage, &wishlistPage)
+	err = vr.readValue(page, &wishlistPage)
 	return wishlistPage, err
 }
 
-func (vr *ValueReader) ProductType(key string, pt vangogh_products.ProductType) (interface{}, error) {
-	switch pt {
+func (vr *ValueReader) ProductType(key string) (interface{}, error) {
+	switch vr.productType {
 	case vangogh_products.StoreProducts:
 		return vr.StoreProduct(key)
 	case vangogh_products.AccountProducts:
@@ -141,6 +137,20 @@ func (vr *ValueReader) ProductType(key string, pt vangogh_products.ProductType) 
 	case vangogh_products.WishlistPage:
 		return vr.WishlistPage(key)
 	default:
-		return nil, fmt.Errorf("vangogh_values: cannot create %s value", pt)
+		return nil, fmt.Errorf("vangogh_values: cannot create %s value", vr.productType)
 	}
+}
+
+func (vr *ValueReader) ProductGetter(page string) (productsGetter gog_types.ProductsGetter, err error) {
+	switch vr.productType {
+	case vangogh_products.StorePage:
+		productsGetter, err = vr.StorePage(page)
+	case vangogh_products.AccountPage:
+		productsGetter, err = vr.AccountStorePage(page)
+	case vangogh_products.WishlistPage:
+		productsGetter, err = vr.WishlistPage(page)
+	default:
+		err = fmt.Errorf("%s doesn't implement ProductGetter interface", vr.productType)
+	}
+	return productsGetter, err
 }
