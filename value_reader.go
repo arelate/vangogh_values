@@ -101,12 +101,12 @@ func (vr *ValueReader) ApiProductV2(id string) (apiProductV2 *gog_types.ApiProdu
 	return apiProductV2, err
 }
 
-func (vr *ValueReader) StorePage(page string) (storePage *gog_types.StoreProductsPage, err error) {
+func (vr *ValueReader) StorePage(page string) (storePage *gog_types.StorePage, err error) {
 	err = vr.readValue(page, &storePage)
 	return storePage, err
 }
 
-func (vr *ValueReader) AccountStorePage(page string) (accountStorePage *gog_types.AccountProductsPage, err error) {
+func (vr *ValueReader) AccountStorePage(page string) (accountStorePage *gog_types.AccountPage, err error) {
 	err = vr.readValue(page, &accountStorePage)
 	return accountStorePage, err
 }
