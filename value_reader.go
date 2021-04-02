@@ -116,7 +116,7 @@ func (vr *ValueReader) WishlistPage(page string) (wishlistPage *gog_types.Wishli
 	return wishlistPage, err
 }
 
-func (vr *ValueReader) ProductType(key string) (interface{}, error) {
+func (vr *ValueReader) ReadValue(key string) (interface{}, error) {
 	switch vr.productType {
 	case vangogh_products.StoreProducts:
 		return vr.StoreProduct(key)
@@ -139,6 +139,10 @@ func (vr *ValueReader) ProductType(key string) (interface{}, error) {
 	default:
 		return nil, fmt.Errorf("vangogh_values: cannot create %s value", vr.productType)
 	}
+}
+
+func (vr *ValueReader) ProductType() vangogh_products.ProductType {
+	return vr.productType
 }
 
 func (vr *ValueReader) ProductGetter(page string) (productsGetter gog_types.ProductsGetter, err error) {
