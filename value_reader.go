@@ -159,21 +159,21 @@ func (vr *ValueReader) ProductGetter(page string) (productsGetter gog_types.Prod
 	return productsGetter, err
 }
 
-func (vr *ValueReader) CopyFromType(id string, fromPt vangogh_products.ProductType, fromMt gog_media.Media) error {
+func (vr *ValueReader) CopyToType(id string, toPt vangogh_products.ProductType, toMt gog_media.Media) error {
 
-	if !vangogh_products.SupportsCopy(fromPt, vr.productType) {
-		return fmt.Errorf("vangogh_values: copy from %s to %s is not supported", fromPt, vr.productType)
+	if !vangogh_products.SupportsCopy(vr.productType, toPt) {
+		return fmt.Errorf("vangogh_values: copy type from %s to %s is unsupported", vr.productType, toPt)
 	}
-	if vr.mediaType != fromMt {
-		return fmt.Errorf("vangogh_values: cannot change media on copy from %s (%s) to %s (%s)", vr.productType, vr.mediaType, fromPt, fromMt)
+	if vr.mediaType != toMt {
+		return fmt.Errorf("vangogh_values: copy media from %s to %s is unsupported", vr.mediaType, toMt)
 	}
 
-	destDir, err := vangogh_urls.LocalProductsDir(fromPt, fromMt)
+	toDir, err := vangogh_urls.LocalProductsDir(toPt, toMt)
 	if err != nil {
 		return err
 	}
 
-	vsDest, err := kvas.NewJsonLocal(destDir)
+	vsToType, err := kvas.NewJsonLocal(toDir)
 	if err != nil {
 		return nil
 	}
@@ -185,7 +185,7 @@ func (vr *ValueReader) CopyFromType(id string, fromPt vangogh_products.ProductTy
 
 	defer rc.Close()
 
-	if err := vsDest.Set(id, rc); err != nil {
+	if err := vsToType.Set(id, rc); err != nil {
 		return err
 	}
 
