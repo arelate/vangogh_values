@@ -63,6 +63,10 @@ func (vr *ValueReader) Contains(id string) bool {
 	return vr.valueSet.Contains(id)
 }
 
+func (vr *ValueReader) Remove(id string) error {
+	return vr.valueSet.Remove(id)
+}
+
 func (vr *ValueReader) CreatedAfter(timestamp int64) []string {
 	return vr.valueSet.CreatedAfter(timestamp)
 }
@@ -116,6 +120,11 @@ func (vr *ValueReader) WishlistPage(page string) (wishlistPage *gog_types.Wishli
 	return wishlistPage, err
 }
 
+func (vr *ValueReader) Licences(id string) (licences *gog_types.Licences, err error) {
+	err = vr.readValue(id, &licences)
+	return licences, err
+}
+
 func (vr *ValueReader) ReadValue(key string) (interface{}, error) {
 	switch vr.productType {
 	case vangogh_products.StoreProducts:
@@ -145,14 +154,16 @@ func (vr *ValueReader) ProductType() vangogh_products.ProductType {
 	return vr.productType
 }
 
-func (vr *ValueReader) ProductGetter(page string) (productsGetter gog_types.ProductsGetter, err error) {
+func (vr *ValueReader) ProductsGetter(id string) (productsGetter gog_types.ProductsGetter, err error) {
 	switch vr.productType {
 	case vangogh_products.StorePage:
-		productsGetter, err = vr.StorePage(page)
+		productsGetter, err = vr.StorePage(id)
 	case vangogh_products.AccountPage:
-		productsGetter, err = vr.AccountStorePage(page)
+		productsGetter, err = vr.AccountStorePage(id)
 	case vangogh_products.WishlistPage:
-		productsGetter, err = vr.WishlistPage(page)
+		productsGetter, err = vr.WishlistPage(id)
+	case vangogh_products.Licences:
+		productsGetter, err = vr.Licences(id)
 	default:
 		err = fmt.Errorf("%s doesn't implement ProductGetter interface", vr.productType)
 	}
