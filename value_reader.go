@@ -110,9 +110,9 @@ func (vr *ValueReader) StorePage(page string) (storePage *gog_types.StorePage, e
 	return storePage, err
 }
 
-func (vr *ValueReader) AccountStorePage(page string) (accountStorePage *gog_types.AccountPage, err error) {
-	err = vr.readValue(page, &accountStorePage)
-	return accountStorePage, err
+func (vr *ValueReader) AccountPage(page string) (accountPage *gog_types.AccountPage, err error) {
+	err = vr.readValue(page, &accountPage)
+	return accountPage, err
 }
 
 func (vr *ValueReader) WishlistPage(page string) (wishlistPage *gog_types.WishlistPage, err error) {
@@ -142,7 +142,7 @@ func (vr *ValueReader) ReadValue(key string) (interface{}, error) {
 	case vangogh_products.StorePage:
 		return vr.StorePage(key)
 	case vangogh_products.AccountPage:
-		return vr.AccountStorePage(key)
+		return vr.AccountPage(key)
 	case vangogh_products.WishlistPage:
 		return vr.WishlistPage(key)
 	default:
@@ -159,7 +159,7 @@ func (vr *ValueReader) ProductsGetter(id string) (productsGetter gog_types.Produ
 	case vangogh_products.StorePage:
 		productsGetter, err = vr.StorePage(id)
 	case vangogh_products.AccountPage:
-		productsGetter, err = vr.AccountStorePage(id)
+		productsGetter, err = vr.AccountPage(id)
 	case vangogh_products.WishlistPage:
 		productsGetter, err = vr.WishlistPage(id)
 	case vangogh_products.Licences:
