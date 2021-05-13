@@ -125,6 +125,16 @@ func (vr *ValueReader) Licences(id string) (licences *gog_types.Licences, err er
 	return licences, err
 }
 
+func (vr *ValueReader) OrderPage(page string) (orderPage *gog_types.OrderPage, err error) {
+	err = vr.readValue(page, &orderPage)
+	return orderPage, err
+}
+
+func (vr *ValueReader) Order(id string) (order *gog_types.Order, err error) {
+	err = vr.readValue(id, &order)
+	return order, err
+}
+
 func (vr *ValueReader) ReadValue(key string) (interface{}, error) {
 	switch vr.productType {
 	case vangogh_products.StoreProducts:
@@ -154,16 +164,18 @@ func (vr *ValueReader) ProductType() vangogh_products.ProductType {
 	return vr.productType
 }
 
-func (vr *ValueReader) ProductsGetter(id string) (productsGetter gog_types.ProductsGetter, err error) {
+func (vr *ValueReader) ProductsGetter(page string) (productsGetter gog_types.ProductsGetter, err error) {
 	switch vr.productType {
 	case vangogh_products.StorePage:
-		productsGetter, err = vr.StorePage(id)
+		productsGetter, err = vr.StorePage(page)
 	case vangogh_products.AccountPage:
-		productsGetter, err = vr.AccountPage(id)
+		productsGetter, err = vr.AccountPage(page)
 	case vangogh_products.WishlistPage:
-		productsGetter, err = vr.WishlistPage(id)
+		productsGetter, err = vr.WishlistPage(page)
 	case vangogh_products.Licences:
-		productsGetter, err = vr.Licences(id)
+		productsGetter, err = vr.Licences(page)
+	case vangogh_products.OrderPage:
+		productsGetter, err = vr.OrderPage(page)
 	default:
 		err = fmt.Errorf("%s doesn't implement ProductGetter interface", vr.productType)
 	}
