@@ -71,8 +71,8 @@ func (vr *ValueReader) CreatedAfter(timestamp int64) []string {
 	return vr.valueSet.CreatedAfter(timestamp)
 }
 
-func (vr *ValueReader) ModifiedAfter(timestamp int64) []string {
-	return vr.valueSet.ModifiedAfter(timestamp)
+func (vr *ValueReader) ModifiedAfter(timestamp int64, excludeCreated bool) []string {
+	return vr.valueSet.ModifiedAfter(timestamp, excludeCreated)
 }
 
 func (vr *ValueReader) StoreProduct(id string) (storeProduct *gog_types.StoreProduct, err error) {
