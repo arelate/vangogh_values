@@ -75,6 +75,10 @@ func (vr *ValueReader) ModifiedAfter(timestamp int64, excludeCreated bool) []str
 	return vr.valueSet.ModifiedAfter(timestamp, excludeCreated)
 }
 
+func (vr *ValueReader) WasModifiedAfter(id string, timestamp int64) bool {
+	return vr.valueSet.WasModifiedAfter(id, timestamp)
+}
+
 func (vr *ValueReader) StoreProduct(id string) (storeProduct *gog_types.StoreProduct, err error) {
 	err = vr.readValue(id, &storeProduct)
 	return storeProduct, err
